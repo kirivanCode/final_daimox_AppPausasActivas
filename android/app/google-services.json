@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1008840384942",
+    "project_id": "deimox-autenticacion",
+    "storage_bucket": "deimox-autenticacion.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008840384942:android:6844e3798b0b74b89ae83f",
+        "android_client_info": {
+          "package_name": "com.deimox.deimoxapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP770DVRWh8DjgLna056N7d26A7zOv30s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008840384942:android:44606b9d200eaf489ae83f",
+        "android_client_info": {
+          "package_name": "com.example.deimoxaplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP770DVRWh8DjgLna056N7d26A7zOv30s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
