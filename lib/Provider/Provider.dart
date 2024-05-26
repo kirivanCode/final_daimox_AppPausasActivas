@@ -98,13 +98,13 @@ class alarmprovider extends ChangeNotifier {
         'your_channel_id',
         'your_channel_name',
         channelDescription: 'your_channel_description',
-        sound: RawResourceAndroidNotificationSound('alarmaxd'), // Aquí se especifica el nombre del archivo de sonido
+        sound: RawResourceAndroidNotificationSound('alarmaxd'), // me mate
         autoCancel: false,
         playSound: true,
-        importance: Importance.max, // Cambiado de 'priority' a 'importance'
+        importance: Importance.max, // puse importante
       ),
     ),
-    androidAllowWhileIdle: true, // Cambiado de 'androidScheduleMode' a 'androidAllowWhileIdle'
+    androidAllowWhileIdle: true, // Cambiado de 'androidScheduleMode' a 'androidAllowWhileIdle' porque no servia
     uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
   );
 }
