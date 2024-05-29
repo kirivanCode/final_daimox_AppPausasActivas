@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFF1C1C1C),
         appBarTheme: const AppBarTheme(
@@ -146,12 +147,38 @@ class MainScreen extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Text(
-                                      alarm.modelist[index].dateTime!,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.white,
+                                    GestureDetector(
+                                      onTap: () async {
+                                        DateTime? newDateTime =
+                                            await showDateTimePicker(
+                                                context,
+                                                alarm.modelist[index]
+                                                    .milliseconds!);
+                                        if (newDateTime != null) {
+                                          String formattedDateTime =
+                                              DateFormat()
+                                                  .add_jms()
+                                                  .format(newDateTime);
+                                          int milliseconds = newDateTime
+                                              .millisecondsSinceEpoch;
+                                          context
+                                              .read<alarmprovider>()
+                                              .EditAlarm(
+                                                  index,
+                                                  formattedDateTime,
+                                                  milliseconds);
+                                          context
+                                              .read<alarmprovider>()
+                                              .SetData();
+                                        }
+                                      },
+                                      child: Text(
+                                        alarm.modelist[index].dateTime!,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                     Padding(
@@ -165,22 +192,57 @@ class MainScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                CupertinoSwitch(
-                                  value: alarm.modelist[index].check,
-                                  onChanged: (v) {
-                                    alarm.EditSwitch(index, v);
-                                    if (!v) {
-                                      alarm.CancelNotification(alarm.modelist[index].id!);
-                                    }
-                                  },
+                                Row(
+                                  children: [
+                                    CupertinoSwitch(
+                                      activeColor: Colors.red,
+                                      value: alarm.modelist[index].check,
+                                      onChanged: (value) {
+                                        if (value == true) {
+                                          DateTime datetime = DateTime
+                                              .fromMillisecondsSinceEpoch(alarm
+                                                  .modelist[index]
+                                                  .milliseconds!);
+                                          int randomNumber =
+                                              alarm.modelist[index].id!;
+                                          context
+                                              .read<alarmprovider>()
+                                              .ScheduleNotification(
+                                                  datetime, randomNumber);
+                                          context
+                                              .read<alarmprovider>()
+                                              .EditSwitch(index, value);
+                                          context
+                                              .read<alarmprovider>()
+                                              .SetData();
+                                        } else {
+                                          context
+                                              .read<alarmprovider>()
+                                              .CancelNotification(
+                                                  alarm.modelist[index].id!);
+                                          context
+                                              .read<alarmprovider>()
+                                              .EditSwitch(index, value);
+                                          context
+                                              .read<alarmprovider>()
+                                              .SetData();
+                                        }
+                                      },
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        context
+                                            .read<alarmprovider>()
+                                            .DeleteAlarm(index);
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
-                            ),
-                            Text(
-                              alarm.modelist[index].when!,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                              ),
                             ),
                           ],
                         ),
@@ -191,164 +253,178 @@ class MainScreen extends StatelessWidget {
               ),
             );
           }),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.1,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-              ),
-              color: Color.fromARGB(255, 31, 36, 69),
-            ),
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AddAlarm()),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddAlarm()),
+          );
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
+
+  Future<DateTime?> showDateTimePicker(
+      BuildContext context, int milliseconds) async {
+    DateTime initialDate = DateTime.fromMillisecondsSinceEpoch(milliseconds);
+    TimeOfDay initialTime =
+        TimeOfDay(hour: initialDate.hour, minute: initialDate.minute);
+
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+
+    if (selectedDate != null) {
+      TimeOfDay? selectedTime = await showTimePicker(
+        context: context,
+        initialTime: initialTime,
+      );
+
+      if (selectedTime != null) {
+        return DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          selectedTime.hour,
+          selectedTime.minute,
+        );
+      }
+    }
+    return null;
+  }
 }
 
-class AddAlarm extends StatefulWidget {
+class AddAlarm extends StatelessWidget {
   const AddAlarm({super.key});
 
   @override
-  State<AddAlarm> createState() => _AddAlarmState();
-}
-
-class _AddAlarmState extends State<AddAlarm> {
-  late TextEditingController controller;
-  String? dateTime;
-  bool repeat = false;
-  DateTime? notificationtime;
-  String? name = "none";
-  int? milliseconds;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = TextEditingController();
-    context.read<alarmprovider>().GetData();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    TextEditingController labelcontroller = TextEditingController();
+    TextEditingController whencontroller = TextEditingController();
+    int? randomNumber;
+    String? formattedDateTime;
+
     return Scaffold(
       appBar: AppBar(
-        actions: [
+        iconTheme: IconThemeData(color: Colors.white),
+        actions: const [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.check),
-          ),
+            padding: EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.menu,
+              color: Colors.white,
+            ),
+          )
         ],
-        automaticallyImplyLeading: true,
         title: const Text(
           'Agregar Alarma',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.width,
-            child: Center(
-              child: CupertinoDatePicker(
-                showDayOfWeek: true,
-                minimumDate: DateTime.now(),
-                dateOrder: DatePickerDateOrder.dmy,
-                onDateTimeChanged: (va) {
-                  dateTime = DateFormat().add_jms().format(va);
-                  milliseconds = va.microsecondsSinceEpoch;
-                  notificationtime = va;
-                },
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              child: CupertinoTextField(
-                placeholder: "Añadir etiqueta",
-                controller: controller,
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 226, 226, 226),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: const Color.fromARGB(255, 52, 52, 52)),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            TextField(
+              controller: labelcontroller,
+              decoration: InputDecoration(
+                labelText: "Nombre de Alarma",
+                labelStyle: TextStyle(
+                  color: Colors.white,
                 ),
-                style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
               ),
             ),
-          ),
-          Row(
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text("Repetir diariamente", style: TextStyle(color: Colors.white)),
+            TextField(
+              controller: whencontroller,
+              decoration: InputDecoration(
+                labelText: "Repetir",
+                labelStyle: TextStyle(
+                  color: Colors.white,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
               ),
-              CupertinoSwitch(
-                value: repeat,
-                onChanged: (bool value) {
-                  repeat = value;
-                  name = repeat ? "Todos los días" : "none";
-                  setState(() {});
-                },
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                DateTime? selectedDateTime = await showDateTimePicker(context);
+                if (selectedDateTime != null) {
+                  formattedDateTime =
+                      DateFormat().add_jms().format(selectedDateTime);
+                  int milliseconds = selectedDateTime.millisecondsSinceEpoch;
+                  randomNumber = UniqueKey().hashCode;
+
+                  context.read<alarmprovider>().SetAlaram(
+                        labelcontroller.text,
+                        formattedDateTime!,
+                        false,
+                        whencontroller.text,
+                        randomNumber!,
+                        milliseconds,
+                      );
+                  context.read<alarmprovider>().SetData();
+
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text("Añadir Alarma"),
+              style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                textStyle: const TextStyle(fontSize: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
               ),
-            ],
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Random random = Random();
-              int randomNumber = random.nextInt(100);
-
-              context.read<alarmprovider>().SetAlaram(
-                  controller.text, dateTime!, true, name!, randomNumber, milliseconds!);
-              context.read<alarmprovider>().SetData();
-              context.read<alarmprovider>().ScheduleNotification(notificationtime!, randomNumber);
-
-              Navigator.pop(context);
-            },
-            child: const Text("Establecer Alarma"),
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<DateTime?> showDateTimePicker(BuildContext context) async {
+    DateTime initialDate = DateTime.now();
+    TimeOfDay initialTime = TimeOfDay.now();
+
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+
+    if (selectedDate != null) {
+      TimeOfDay? selectedTime = await showTimePicker(
+        context: context,
+        initialTime: initialTime,
+      );
+
+      if (selectedTime != null) {
+        return DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          selectedTime.hour,
+          selectedTime.minute,
+        );
+      }
+    }
+    return null;
   }
 }
