@@ -1,5 +1,6 @@
 import 'package:deimoxapp/Provider/Provider.dart';
 import 'package:deimoxapp/screens/clock/alarma.dart';
+import 'package:deimoxapp/screens/inicio.dart';
 import 'package:deimoxapp/screens/signin_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -54,6 +55,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+
+      //home: const Inicio(),
       home: const SignInScreen(),
     );
   }

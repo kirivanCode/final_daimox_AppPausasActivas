@@ -1,4 +1,5 @@
 import 'package:deimoxapp/Provider/Provider.dart';
+import 'package:deimoxapp/screens/clock_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -77,17 +78,20 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(
-              Icons.menu,
-              color: Colors.white,
-            ),
-          )
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.access_time, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ClockScreen()),
+              );
+            },
+          ),
+         
         ],
         title: const Text(
-          'Programar',
+          'Programar Alarma',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -302,6 +306,7 @@ class MainScreen extends StatelessWidget {
     return null;
   }
 }
+
 
 class AddAlarm extends StatelessWidget {
   const AddAlarm({super.key});

@@ -1,14 +1,18 @@
+import 'package:deimoxapp/screens/ColaboracionesScreen.dart';
+import 'package:deimoxapp/screens/MusicScreen.dart';
 import 'package:deimoxapp/screens/clock/alarma.dart';
-
+import 'package:deimoxapp/screens/clock_screen.dart';
 import 'package:deimoxapp/screens/exer_cuerpo.dart';
 import 'package:flutter/material.dart';
 import 'package:deimoxapp/screens/signin_screen.dart';
 import 'package:deimoxapp/screens/home_screen.dart';
 import 'package:deimoxapp/screens/exer_pasivos.dart';
 import 'package:deimoxapp/screens/profile_screen.dart';
+// Asegúrate de importar ColaboracionesScreen
 
 class Inicio extends StatelessWidget {
   const Inicio({super.key});
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,9 +22,9 @@ class Inicio extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color.fromARGB(255, 0, 0, 0),
-              Color.fromARGB(255, 0, 0, 0),
-              Color.fromARGB(255, 0, 0, 0),
+              Color.fromARGB(255, 17, 49, 35),
+              Color.fromARGB(255, 42, 42, 42),
+              Color.fromARGB(255, 2, 3, 3),
             ],
           ),
         ),
@@ -29,166 +33,71 @@ class Inicio extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(
-                  height: 5,
-                ),
-                Image.asset('assets/images/logotipo22.png'),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 20),
                 Container(
-                  width: 350,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 35, 35, 35),
-                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xFF1C1C1C),
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        height: 5,
-                      ),
                       const Text(
                         'Menú',
                         style: TextStyle(
-                          fontSize: 35,
+                          fontSize: 30,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 10),
                       const Text(
                         'Ejercicios de Pausas',
                         style: TextStyle(
-                          fontSize: 25,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const HomeScreen(),
-                                    ),
-                                  );
-                                },
-                                child: _buildIconWithDescription(
-                                  'assets/images/activas.png',
-                                  'Activas',
-                                  context,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const HomeScreen3(),
-                                    ),
-                                  );
-                                },
-                                child: _buildIconWithDescription(
-                                  'assets/images/cuerpo.png',
-                                  'Cuerpo',
-                                  context,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const HomeScreen2(),
-                                    ),
-                                  );
-                                },
-                                child: _buildIconWithDescription(
-                                  'assets/images/pasivas.png',
-                                  'Pasivas',
-                                  context,
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const AlarmApp(),
-                                    ),
-                                  );
-                                },
-                                child: _buildIconWithDescription(
-                                  'assets/images/alarma.png',
-                                  'Alarma',
-                                  context,
-                                ),
-                              ),
-                            ],
-                          ),
+                          _buildIconColumn(context, 'assets/images/activas.png', 'Activas', const HomeScreen()),
+                          _buildIconColumn(context, 'assets/images/cuerpo.png', 'Cuerpo', const HomeScreen3()),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const ProfileScreen(),
-                                ),
-                              );
-                            },
-                            child: _buildIconWithDescription(
-                              'assets/images/perfil.png',
-                              'Perfil',
-                              context,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SignInScreen(),
-                                ),
-                              );
-                            },
-                            child: _buildIconWithDescription(
-                              'assets/images/exit.png',
-                              'Salir',
-                              context,
-                            ),
-                          ),
+                          _buildIconColumn(context, 'assets/images/pasivas.png', 'Pasivas', const HomeScreen2()),
+                          _buildIconColumn(context, 'assets/images/alarma.png', 'Alarma', const AlarmApp()),
                         ],
                       ),
-                      const SizedBox(
-                          height:
-                              10), // Añadir un espacio al final para evitar el recorte del último elemento
+                      const SizedBox(height: 15),
+                     
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildIconColumn(context, 'assets/images/perfil.png', 'Perfil', const DatosGuardadosScreen()),
+                          _buildIconColumn(context, 'assets/images/cerrar-sesion.png', 'Salir', const SignInScreen()),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
                     ],
                   ),
                 ),
-                const SizedBox(
-                    height: 10), // Espacio adicional al final de la columna
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -197,33 +106,44 @@ class Inicio extends StatelessWidget {
     );
   }
 
-  Widget _buildIconWithDescription(
-    String imagePath,
-    String description,
-    BuildContext context,
-  ) {
-    return Container(
-      margin: const EdgeInsets.all(8), // Margen alrededor del contenedor
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10), // Borde redondeado
-        border: Border.all(
-            color: const Color.fromARGB(255, 113, 113, 113),
-            width: 4), // Borde blanco
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(
-            imagePath,
-            width: 120,
-            height: 120,
+  Widget _buildIconColumn(BuildContext context, String imagePath, String description, Widget targetScreen) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => targetScreen,
           ),
-          const SizedBox(height: 2), // Espacio entre la imagen y el texto
-          Text(
-            description,
-            style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-            textAlign: TextAlign.center,
+        );
+      },
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: const Color(0xFF717171), width: 2),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  imagePath,
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  height: MediaQuery.of(context).size.width * 0.25,
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ],
       ),

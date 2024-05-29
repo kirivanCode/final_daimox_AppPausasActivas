@@ -1,3 +1,4 @@
+import 'package:deimoxapp/screens/ColaboracionesScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -281,6 +282,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                   child: const Text('Datos del Perfil'),
                 ),
+              const SizedBox(height: 20.0),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const ColaboracionesScreen()), // Navega a la pantalla de colaboraciones
+                    );
+                  },
+                  icon: Image.asset(
+                    'assets/images/xd.png',
+                    width: 24,
+                    height: 24,
+                  ),
+                  label: const Text('Creadores de la app'),
+                ),
               ],
             ),
           ),
@@ -351,6 +369,21 @@ class DatosGuardadosScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final User? user = FirebaseAuth.instance.currentUser;
 
+    // Si el usuario no está autenticado, redirigir a la pantalla de autenticación
+    if (user == null) {
+      Future.microtask(() {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AuthScreen()),
+        );
+      });
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -368,63 +401,69 @@ class DatosGuardadosScreen extends StatelessWidget {
       ),
       backgroundColor: const Color.fromARGB(255, 34, 34, 34),
       body: Center(
-        child: user != null
-            ? StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('perfiles')
-                    .doc(user.uid)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  }
-                  if (snapshot.hasError) {
-                    return const Text(
-                      'Error al cargar los datos',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    );
-                  }
-                  if (!snapshot.hasData || !snapshot.data!.exists) {
-                    return const Text(
-                      'No hay datos guardados',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    );
-                  }
-                  Map<String, dynamic> data =
-                      snapshot.data!.data() as Map<String, dynamic>;
-                  return SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: CircleAvatar(
-                              radius: 120.0,
-                              backgroundImage: AssetImage(
-                                  data['imagen'] ?? 'assets/images/xd.png'),
-                            ),
-                          ),
-                          const SizedBox(height: 20.0),
-                          buildInfoText(
-                              'Correo', user.email ?? 'No disponible'),
-                          buildInfoText('Nombre', data['nombre']),
-                          buildInfoText('Apellido', data['apellido']),
-                          buildInfoText('Edad', data['edad'].toString()),
-                          buildInfoText('Género', data['genero']),
-                          buildInfoText('Peso', '${data['peso']} kg'),
-                          buildInfoText('Altura', '${data['altura']} mts'),
-                        ],
+        child: StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('perfiles')
+              .doc(user.uid)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+            if (snapshot.hasError) {
+              return const Text(
+                'Error al cargar los datos',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              );
+            }
+            if (!snapshot.hasData || !snapshot.data!.exists) {
+              return const Text(
+                'No hay datos guardados',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              );
+            }
+            Map<String, dynamic> data =
+                snapshot.data!.data() as Map<String, dynamic>;
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: CircleAvatar(
+                        radius: 120.0,
+                        backgroundImage: AssetImage(
+                            data['imagen'] ?? 'assets/images/xd.png'),
                       ),
                     ),
-                  );
-                },
-              )
-            : const Text(
-                'Usuario no autenticado',
-                style: TextStyle(color: Colors.white, fontSize: 18),
+                    const SizedBox(height: 20.0),
+                    buildInfoText('Correo', user.email ?? 'No disponible'),
+                    buildInfoText('Nombre', data['nombre']),
+                    buildInfoText('Apellido', data['apellido']),
+                    buildInfoText('Edad', data['edad'].toString()),
+                    buildInfoText('Género', data['genero']),
+                    buildInfoText('Peso', '${data['peso']} kg'),
+                    buildInfoText('Altura', '${data['altura']} mts'),
+                    const SizedBox(height: 20.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfileScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text('Editar Perfil'),
+                    ),
+                  ],
+                ),
               ),
+            );
+          },
+        ),
       ),
     );
   }
