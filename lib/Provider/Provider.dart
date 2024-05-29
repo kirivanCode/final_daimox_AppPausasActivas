@@ -16,12 +16,25 @@ class alarmprovider extends ChangeNotifier {
   late BuildContext context;
 
   SetAlaram(String label, String dateTime, bool check, String repeat, int id, int milliseconds) {
-    modelist.add(Model(label: label, dateTime: dateTime, check: check, when: repeat, id: id, milliseconds: milliseconds));
+    modelist.add(Model(
+      label: label,
+      dateTime: dateTime,
+      check: check,
+      when: repeat,
+      id: id,
+      milliseconds: milliseconds
+    ));
     notifyListeners();
   }
 
   EditSwitch(int index, bool check) {
     modelist[index].check = check;
+    notifyListeners();
+  }
+
+  EditAlarm(int index, String dateTime, int milliseconds) {
+    modelist[index].dateTime = dateTime;
+    modelist[index].milliseconds = milliseconds;
     notifyListeners();
   }
 
@@ -32,6 +45,13 @@ class alarmprovider extends ChangeNotifier {
       modelist = cominglist.map((e) => Model.fromJson(json.decode(e))).toList();
       notifyListeners();
     }
+  }
+
+  void DeleteAlarm(int index) {
+    CancelNotification(modelist[index].id!);
+    modelist.removeAt(index);
+    SetData();
+    notifyListeners();
   }
 
   SetData() {
@@ -48,17 +68,17 @@ class alarmprovider extends ChangeNotifier {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     await flutterLocalNotificationsPlugin!.initialize(initSettings, onDidReceiveNotificationResponse: onDidReceiveNotificationResponse);
 
-    // Define el canal de notificaciones con sonido personalizado
     const androidChannel = AndroidNotificationChannel(
-      'your_channel_id', // id del canal
-      'your_channel_name', // nombre del canal
-      description: 'your_channel_description', // descripción del canal
+      'your_channel_id',
+      'your_channel_name',
+      description: 'your_channel_description',
       importance: Importance.max,
       sound: RawResourceAndroidNotificationSound('alarmaxd'),
       playSound: true,
     );
 
-    final androidPlugin = flutterLocalNotificationsPlugin!.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+    final androidPlugin = flutterLocalNotificationsPlugin!
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
     if (androidPlugin != null) {
       await androidPlugin.createNotificationChannel(androidChannel);
     }
@@ -87,28 +107,28 @@ class alarmprovider extends ChangeNotifier {
   }
 
   ScheduleNotification(DateTime dateTime, int randomNumber) async {
-  int newTime = dateTime.millisecondsSinceEpoch - DateTime.now().millisecondsSinceEpoch;
-  await flutterLocalNotificationsPlugin!.zonedSchedule(
-    randomNumber,
-    'Alarm Clock',
-    "${DateFormat().format(DateTime.now())}",
-    tz.TZDateTime.now(tz.local).add(Duration(milliseconds: newTime)),
-    const NotificationDetails(
-      android: AndroidNotificationDetails(
-        'your_channel_id',
-        'your_channel_name',
-        channelDescription: 'your_channel_description',
-        sound: RawResourceAndroidNotificationSound('alarmaxd'), // me mate
-        autoCancel: false,
-        playSound: true,
-        importance: Importance.max, // puse importante
+    int newTime = dateTime.millisecondsSinceEpoch - DateTime.now().millisecondsSinceEpoch;
+    await flutterLocalNotificationsPlugin!.zonedSchedule(
+      randomNumber,
+      'Alarm Clock',
+      '¡Despierta! Tu alarma está sonando.',
+      tz.TZDateTime.now(tz.local).add(Duration(milliseconds: newTime)),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'your_channel_id',
+          'your_channel_name',
+          channelDescription: 'your_channel_description',
+          sound: RawResourceAndroidNotificationSound('alarmaxd'),
+          autoCancel: false,
+          playSound: true,
+          importance: Importance.max,
+        ),
       ),
-    ),
-    androidAllowWhileIdle: true, // Cambiado de 'androidScheduleMode' a 'androidAllowWhileIdle' porque no servia
-    uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-  );
-}
-
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      payload: 'alarm_payload',
+    );
+  }
 
   CancelNotification(int notificationId) async {
     await flutterLocalNotificationsPlugin!.cancel(notificationId);
