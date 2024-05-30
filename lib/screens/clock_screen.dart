@@ -51,7 +51,6 @@ class _ClockScreenState extends State<ClockScreen> {
         AndroidNotificationDetails(
       'alarm_channel',
       'Alarma',
-
       importance: Importance.max,
       priority: Priority.high,
       sound: RawResourceAndroidNotificationSound('alarmaxd'),
@@ -135,7 +134,6 @@ class _ClockScreenState extends State<ClockScreen> {
               width: 350,
               height: 350,
             ),
-            
             const Text(
               'Hora de la alarma:',
               style: TextStyle(fontSize: 20.0, color: Colors.white),

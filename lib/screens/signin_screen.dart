@@ -1,5 +1,4 @@
 import 'package:deimoxapp/reusable_widgets/reusable_widget.dart';
-//import 'package:url_launcher/url_launcher.dart';
 import 'package:deimoxapp/screens/inicio.dart';
 import 'package:deimoxapp/screens/signup_screen.dart';
 import 'package:deimoxapp/utilis/color_utils.dart';
@@ -7,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-//import 'package:daimox_login/utilis/color_utils.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -141,7 +139,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           .then((value) {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => const Inicio()),
+                          MaterialPageRoute(
+                              builder: (context) => const Inicio()),
                         );
                       }).catchError((error) {
                         showDialog(
@@ -225,8 +224,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           _launchURL(
                               'https://www.facebook.com'); // Lógica para abrir la URL de Google
                         },
-                        child:
-                            const Icon(FontAwesomeIcons.google, color: Colors.white),
+                        child: const Icon(FontAwesomeIcons.google,
+                            color: Colors.white),
                       ),
                     ],
                   ),
@@ -252,9 +251,43 @@ class _SignInScreenState extends State<SignInScreen> {
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
-
-                      
                     ],
+                  ),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Inicio()),
+                      );
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(70),
+                        gradient: const LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Color(0xFF98FF98),
+                            Color(0xFF00FF00),
+                            Color(0xFF50C878),
+                          ],
+                        ),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Text(
+                          'Ingresar como invitado',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

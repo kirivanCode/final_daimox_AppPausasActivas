@@ -8,11 +8,10 @@ import 'package:deimoxapp/screens/signin_screen.dart';
 import 'package:deimoxapp/screens/home_screen.dart';
 import 'package:deimoxapp/screens/exer_pasivos.dart';
 import 'package:deimoxapp/screens/profile_screen.dart';
-// Asegúrate de importar ColaboracionesScreen
 
 class Inicio extends StatelessWidget {
   const Inicio({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,25 +71,33 @@ class Inicio extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildIconColumn(context, 'assets/images/activas.png', 'Activas', const HomeScreen()),
-                          _buildIconColumn(context, 'assets/images/cuerpo.png', 'Cuerpo', const HomeScreen3()),
+                          _buildIconColumn(context, 'assets/images/activas.png',
+                              'Activas', const HomeScreen()),
+                          _buildIconColumn(context, 'assets/images/cuerpo.png',
+                              'Cuerpo', const HomeScreen3()),
                         ],
                       ),
                       const SizedBox(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildIconColumn(context, 'assets/images/pasivas.png', 'Pasivas', const HomeScreen2()),
-                          _buildIconColumn(context, 'assets/images/alarma.png', 'Alarma', const AlarmApp()),
+                          _buildIconColumn(context, 'assets/images/pasivas.png',
+                              'Pasivas', const HomeScreen2()),
+                          _buildIconColumn(context, 'assets/images/alarma.png',
+                              'Alarma', const AlarmApp()),
                         ],
                       ),
                       const SizedBox(height: 15),
-                     
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _buildIconColumn(context, 'assets/images/perfil.png', 'Perfil', const DatosGuardadosScreen()),
-                          _buildIconColumn(context, 'assets/images/cerrar-sesion.png', 'Salir', const SignInScreen()),
+                          _buildIconColumn(context, 'assets/images/perfil.png',
+                              'Perfil', const DatosGuardadosScreen()),
+                          _buildIconColumn(
+                              context,
+                              'assets/images/cerrar-sesion.png',
+                              'Salir',
+                              const SignInScreen()),
                         ],
                       ),
                       const SizedBox(height: 15),
@@ -106,7 +113,8 @@ class Inicio extends StatelessWidget {
     );
   }
 
-  Widget _buildIconColumn(BuildContext context, String imagePath, String description, Widget targetScreen) {
+  Widget _buildIconColumn(BuildContext context, String imagePath,
+      String description, Widget targetScreen) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -129,8 +137,8 @@ class Inicio extends StatelessWidget {
               children: [
                 Image.asset(
                   imagePath,
-                  width: MediaQuery.of(context).size.width * 0.25,
-                  height: MediaQuery.of(context).size.width * 0.25,
+                  width: MediaQuery.of(context).size.width * 0.35,
+                  height: MediaQuery.of(context).size.width * 0.35,
                 ),
                 const SizedBox(height: 5),
                 Text(

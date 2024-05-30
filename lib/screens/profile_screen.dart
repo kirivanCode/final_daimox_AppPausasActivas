@@ -1,8 +1,11 @@
 import 'package:deimoxapp/screens/ColaboracionesScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:deimoxapp/reusable_widgets/reusable_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:deimoxapp/utilis/color_utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +38,7 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _passwordHidden = true;
 
   Future<void> _register() async {
     try {
@@ -75,31 +79,147 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Autenticación')),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text(
+          'Autenticación',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+          size: 30,
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                hexStringToColor("000000"),
+                hexStringToColor("000000"),
+                hexStringToColor("161616")
+              ],
             ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Contraseña'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _register,
-              child: const Text('Registrar'),
-            ),
-            ElevatedButton(
-              onPressed: _login,
-              child: const Text('Iniciar Sesión'),
-            ),
-          ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                height: 650,
+                width: 325,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 24, 24, 24),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      const SizedBox(height: 20),
+                      logoWidget("assets/images/logo2.png"),
+                      const SizedBox(height: 30),
+                      const Text(
+                        'Autenticarse',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: 250,
+                        child: TextField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(
+                            labelText: 'Correo Electrónico',
+                            labelStyle: TextStyle(color: Colors.white),
+                            suffixIcon: Icon(
+                              FontAwesomeIcons.envelope,
+                              size: 17,
+                              color: Colors.white,
+                            ),
+                            hintStyle: TextStyle(color: Colors.white),
+                          ),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: 250,
+                        child: TextField(
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                            labelText: 'Contraseña',
+                            labelStyle: const TextStyle(color: Colors.white),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _passwordHidden = !_passwordHidden;
+                                });
+                              },
+                              child: Icon(
+                                _passwordHidden
+                                    ? FontAwesomeIcons.eyeSlash
+                                    : FontAwesomeIcons.eye,
+                                size: 17,
+                                color: Colors.white,
+                              ),
+                            ),
+                            hintStyle: const TextStyle(color: Colors.white),
+                          ),
+                          obscureText: _passwordHidden,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        onPressed: _login,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 25, 165, 69),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 15),
+                        ),
+                        child: const Text(
+                          'Iniciar Sesión',
+                          style: TextStyle(fontSize: 18.0, color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _register,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              const Color.fromARGB(255, 25, 165, 69),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 15),
+                        ),
+                        child: const Text(
+                          'Registrar',
+                          style: TextStyle(fontSize: 18.0, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -158,7 +278,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Perfil',
+          'Datos Guardados',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -272,17 +392,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
                 const SizedBox(height: 20.0),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const DatosGuardadosScreen()),
-                    );
-                  },
-                  child: const Text('Datos del Perfil'),
-                ),
-              const SizedBox(height: 20.0),
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.push(
@@ -387,7 +496,7 @@ class DatosGuardadosScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Datos Guardados',
+          'Perfil',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -417,9 +526,26 @@ class DatosGuardadosScreen extends StatelessWidget {
               );
             }
             if (!snapshot.hasData || !snapshot.data!.exists) {
-              return const Text(
-                'No hay datos guardados',
-                style: TextStyle(color: Colors.white, fontSize: 18),
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'No hay datos guardados',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  const SizedBox(height: 20.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text('Crear Perfil'),
+                  ),
+                ],
               );
             }
             Map<String, dynamic> data =

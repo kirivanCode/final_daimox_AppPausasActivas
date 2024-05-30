@@ -88,7 +88,6 @@ class MainScreen extends StatelessWidget {
               );
             },
           ),
-         
         ],
         title: const Text(
           'Programar Alarma',
@@ -127,7 +126,7 @@ class MainScreen extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.1,
+                      height: MediaQuery.of(context).size.width * 0.16,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         color: Colors.grey[900],
@@ -306,7 +305,6 @@ class MainScreen extends StatelessWidget {
     return null;
   }
 }
-
 
 class AddAlarm extends StatelessWidget {
   const AddAlarm({super.key});
